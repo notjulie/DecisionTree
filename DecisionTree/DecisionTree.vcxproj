@@ -151,6 +151,7 @@
     <ClInclude Include="DecisionFeature.h" />
     <ClInclude Include="DecisionTree.h" />
     <ClInclude Include="DecisionTreeException.h" />
+    <ClInclude Include="DecisionTreeNode.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DecisionTree.cpp" />
