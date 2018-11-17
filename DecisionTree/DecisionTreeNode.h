@@ -8,8 +8,14 @@ template <typename TFeatureSet, typename TOutcome>
    class DecisionTreeNode
 {
 public:
-   static std::unique_ptr<DecisionTreeNode> CreateTree(const DecisionDataSet<TFeatureSet, TOutcome> &dataSet) {
-      throw DecisionTreeException("DecisionTreeNode::CreateTree: not implemented");
+   virtual ~DecisionTreeNode(void) {}
+
+   virtual unsigned GetDepth(void) const {
+      throw DecisionTreeException("DecisionTreeNode::GetDepth: not implemented");
+   }
+
+   virtual unsigned GetTotalNodeCount(void) const {
+      throw DecisionTreeException("DecisionTreeNode::GetTotalNodeCount: not implemented");
    }
 };
 
