@@ -153,6 +153,11 @@
   <ItemGroup>
     <ClCompile Include="TreeTest.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DecisionTree\DecisionTree.vcxproj">
+      <Project>{93fb5004-f457-4885-87ca-a08df583ba4c}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -33,9 +33,15 @@
     <ClInclude Include="LeafNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FeatureSetInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DecisionTree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DecisionFeature.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

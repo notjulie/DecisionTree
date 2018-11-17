@@ -152,9 +152,11 @@
     <ClInclude Include="DecisionTree.h" />
     <ClInclude Include="DecisionTreeException.h" />
     <ClInclude Include="DecisionTreeNode.h" />
+    <ClInclude Include="FeatureSetInfo.h" />
     <ClInclude Include="LeafNode.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DecisionFeature.cpp" />
     <ClCompile Include="DecisionTree.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

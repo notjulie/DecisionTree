@@ -4,6 +4,7 @@
 
 #include <vector>
 #include "DecisionTreeException.h"
+#include "FeatureSetInfo.h"
 
 template <typename TFeatureSet, typename TOutcome>
    class DecisionDataSet
@@ -24,8 +25,8 @@ public:
       return points[index].outcome;
    }
 
-   unsigned GetFeatureCount(void) const {
-      throw DecisionTreeException("DecisionDataSet::GetFeatureCount not implemented");
+   size_t GetFeatureCount(void) const {
+      return featureInfo.GetFeatureCount();
    }
 
 private:
@@ -35,6 +36,7 @@ private:
    };
 
 private:
+   FeatureSetInfo<TFeatureSet> featureInfo;
    std::vector<Pair> points;
 };
 
