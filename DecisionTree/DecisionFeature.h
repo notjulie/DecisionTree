@@ -13,6 +13,10 @@ public:
       throw DecisionTreeException("AbstractDecisionFeature::operator!=: not implemented");
    }
 
+   bool operator<(const AbstractDecisionFeature &f) const {
+      throw DecisionTreeException("AbstractDecisionFeature::operator<: not implemented");
+   }
+
    std::function<bool(const AbstractDecisionFeature &)>GetLessThanComparator(void) const {
       throw DecisionTreeException("AbstractDecisionFeature::GetLessThanComparator: not implemented");
    }

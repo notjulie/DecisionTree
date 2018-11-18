@@ -42,6 +42,13 @@ public:
 
    size_t GetFeatureCount(void) const { return featureOffsets.size(); }
 
+   bool IsFeatureLessThan(unsigned featureIndex, const T &a, const T &b) {
+      int offset = featureOffsets[featureIndex];
+      auto featureA = (const AbstractDecisionFeature *)(((char *)&a) + offset);
+      auto featureB = (const AbstractDecisionFeature *)(((char *)&b) + offset);
+      return *featureA < *featureB;
+   }
+
 private:
    std::vector<int> featureOffsets;
 };
