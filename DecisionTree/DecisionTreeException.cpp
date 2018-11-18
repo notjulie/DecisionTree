@@ -6,17 +6,10 @@
 //		DecisionTreeException class... no surprises.
 // =========================================================================
 
-#ifndef DECISIONTREEEXCEPTION_H
-#define DECISIONTREEEXCEPTION_H
 
-#include <stdexcept>
+#include "DecisionTreeException.h"
 
-/// <summary>
-/// class for decision tree exceptions
-/// <summary>
-class DecisionTreeException : public std::runtime_error {
-public:
-   DecisionTreeException(const std::string &message);
-};
-
-#endif
+DecisionTreeException::DecisionTreeException(const std::string &message)
+   : std::runtime_error(message)
+{
+}
