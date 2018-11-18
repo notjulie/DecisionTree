@@ -125,8 +125,10 @@ private:
       std::unique_ptr<TreeNode> result;
       result.reset(new DecisionNode<TFeatureSet,TOutcome>(
          belowTree,
+         dataSet.GetFeatureSet(below),
          aboveTree,
-         dataSet.GetFeature(featureIndex, above)->GetLessThanMidpointComparator()
+         dataSet.GetFeatureSet(above),
+         featureIndex
          ));
       return result;
    }

@@ -7,15 +7,12 @@
 
 class AbstractDecisionFeature {
 public:
-   using MidCompare = std::function<bool(const AbstractDecisionFeature &low, const AbstractDecisionFeature &high, const AbstractDecisionFeature &value)>;
-
-public:
    AbstractDecisionFeature(void);
 
    bool operator!=(const AbstractDecisionFeature &f) const;
    bool operator<(const AbstractDecisionFeature &f) const;
 
-   virtual MidCompare GetLessThanMidpointComparator(void) const = 0;
+   virtual bool IsLessThanMidpoint(const AbstractDecisionFeature &a, const AbstractDecisionFeature &b) const = 0;
 
 public:
    static void RegisterConstructorNotification(const std::function<void(AbstractDecisionFeature *)> &hook);
@@ -38,18 +35,15 @@ public:
 
    T operator*(void) { return value; }
 
-   virtual MidCompare GetLessThanMidpointComparator(void) const {
-      return [](const AbstractDecisionFeature &_low, const AbstractDecisionFeature &_high, const AbstractDecisionFeature &_compareValue) {
-         // all values must be of our same type
-         auto low = dynamic_cast<const DecisionFeature *>(&_low);
-         auto high = dynamic_cast<const DecisionFeature *>(&_high);
-         auto compareValue = dynamic_cast<const DecisionFeature *>(&_compareValue);
-         if (low == nullptr || high == nullptr || compareValue == nullptr)
-            throw DecisionTreeException("DecisionFeature::GetLessThanMidpointComparator: invalid parameter");
+   virtual bool IsLessThanMidpoint(const AbstractDecisionFeature &_a, const AbstractDecisionFeature &_b) const {
+      // this only makes sense if everyone is of the same type
+      auto a = dynamic_cast<const DecisionFeature *>(&_a);
+      auto b = dynamic_cast<const DecisionFeature *>(&_b);
+      if (a == nullptr || b == nullptr)
+         throw DecisionTreeException("DecisionFeature::IsLessThanMidpoint: invalid parameters");
 
-         // this will fail for features that don't support arithmetic... deal with that later
-         return (2 * compareValue->value) < (low->value + high->value);
-      };
+      // this will only work for types that handle arithmetic... will deal with other types later
+      return 2 * value < (a->value + b->value);
    }
 
 protected:

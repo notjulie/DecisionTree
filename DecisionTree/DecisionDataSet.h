@@ -19,6 +19,7 @@ template <typename TFeatureSet, typename TOutcome>
    class DecisionDataSet
 {
 public:
+   using FeatureInfo = FeatureSetInfo<TFeatureSet>;
    using Point = DecisionPoint<TFeatureSet, TOutcome>;
 
 public:
@@ -38,12 +39,11 @@ public:
    }
 
    size_t GetFeatureCount(void) const {
-      return featureInfo.GetFeatureCount();
+      return FeatureInfo::GetInstance().GetFeatureCount();
    }
 
    DecisionDataSet GetSubset(unsigned startIndex, unsigned length) {
       DecisionDataSet result;
-      result.featureInfo = this->featureInfo;
       result.points.insert(
          result.points.begin(),
          this->points.begin() + startIndex,
@@ -57,17 +57,20 @@ public:
          points.begin(),
          points.end(),
          [this, featureIndex](const Point &a, const Point &b) {
-            return featureInfo.IsFeatureLessThan(featureIndex, a.featureSet, b.featureSet);
+            return FeatureInfo::GetInstance().IsFeatureLessThan(featureIndex, a.featureSet, b.featureSet);
          }
       );
    }
 
    const AbstractDecisionFeature *GetFeature(unsigned featureIndex, unsigned pointIndex) {
-      return featureInfo.GetFeatureValue(points[pointIndex].featureSet, featureIndex);
+      return FeatureInfo::GetInstance().GetFeatureValue(points[pointIndex].featureSet, featureIndex);
+   }
+
+   TFeatureSet GetFeatureSet(unsigned index) const {
+      return points[index].featureSet;
    }
 
 private:
-   FeatureSetInfo<TFeatureSet> featureInfo;
    std::vector<Point> points;
 };
 

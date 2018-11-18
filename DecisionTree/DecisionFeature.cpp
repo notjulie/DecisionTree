@@ -1,7 +1,8 @@
 
 #include "DecisionFeature.h"
 
-thread_local std::function<void(AbstractDecisionFeature *)> AbstractDecisionFeature::constructorCallback;
+thread_local std::function<void(AbstractDecisionFeature *)> AbstractDecisionFeature::constructorCallback
+   = [](AbstractDecisionFeature *) {};
 
 AbstractDecisionFeature::AbstractDecisionFeature(void)
 {
