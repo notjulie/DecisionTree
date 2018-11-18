@@ -10,13 +10,9 @@ template <typename TFeatureSet, typename TOutcome>
 public:
    virtual ~DecisionTreeNode(void) {}
 
-   virtual unsigned GetDepth(void) const {
-      throw DecisionTreeException("DecisionTreeNode::GetDepth: not implemented");
-   }
-
-   virtual unsigned GetTotalNodeCount(void) const {
-      throw DecisionTreeException("DecisionTreeNode::GetTotalNodeCount: not implemented");
-   }
+   virtual unsigned GetDepth(void) const = 0;
+   virtual unsigned GetTotalNodeCount(void) const = 0;
+   virtual TOutcome EvaluatePoint(const TFeatureSet &pointFeatures) = 0;
 };
 
 #endif

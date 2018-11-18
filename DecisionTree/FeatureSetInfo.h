@@ -42,11 +42,13 @@ public:
 
    size_t GetFeatureCount(void) const { return featureOffsets.size(); }
 
-   bool IsFeatureLessThan(unsigned featureIndex, const T &a, const T &b) {
+   const AbstractDecisionFeature *GetFeatureValue(const T &featureSet, int featureIndex) const {
       int offset = featureOffsets[featureIndex];
-      auto featureA = (const AbstractDecisionFeature *)(((char *)&a) + offset);
-      auto featureB = (const AbstractDecisionFeature *)(((char *)&b) + offset);
-      return *featureA < *featureB;
+      return (const AbstractDecisionFeature *)(((char *)&featureSet) + offset);
+   }
+
+   bool IsFeatureLessThan(unsigned featureIndex, const T &a, const T &b) {
+      return *GetFeatureValue(a, featureIndex) < *GetFeatureValue(b, featureIndex);
    }
 
 private:

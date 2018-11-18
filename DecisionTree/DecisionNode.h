@@ -10,10 +10,25 @@ template <typename TFeatureSet, typename TOutcome>
 {
 public:
    using Node = DecisionTreeNode<TFeatureSet, TOutcome>;
+   using Compare = std::function<bool(const AbstractDecisionFeature &low, const AbstractDecisionFeature &high, const AbstractDecisionFeature &compareValue)>;
 
 public:
-   DecisionNode(const std::unique_ptr<Node> &belowNode, const std::unique_ptr<Node> &aboveNode, const std::function<bool(const AbstractDecisionFeature &feature)> &comparator) {
+   DecisionNode(std::unique_ptr<Node> &belowNode, std::unique_ptr<Node> &aboveNode, const Compare &comparator) {
+      this->belowNode = std::move(belowNode);
+      this->aboveNode = std::move(aboveNode);
+      this->comparator = comparator;
    }
+
+   virtual unsigned GetDepth(void) const { return 1 + belowNode->GetDepth() + aboveNode->GetDepth(); }
+   virtual unsigned GetTotalNodeCount(void) const { return 1 + belowNode->GetTotalNodeCount() + aboveNode->GetTotalNodeCount(); }
+   virtual TOutcome EvaluatePoint(const TFeatureSet &pointFeatures) {
+      throw DecisionTreeException("DecisionNode::EvaluatePoint: not implemented");
+   }
+
+private:
+   std::unique_ptr<Node> belowNode;
+   std::unique_ptr<Node> aboveNode;
+   Compare comparator;
 };
 
 

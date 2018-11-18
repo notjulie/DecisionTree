@@ -7,19 +7,15 @@
 
 class AbstractDecisionFeature {
 public:
+   using MidCompare = std::function<bool(const AbstractDecisionFeature &low, const AbstractDecisionFeature &high, const AbstractDecisionFeature &value)>;
+
+public:
    AbstractDecisionFeature(void);
 
-   bool operator!=(const AbstractDecisionFeature &f) const {
-      return Compare(f) != 0;
-   }
+   bool operator!=(const AbstractDecisionFeature &f) const;
+   bool operator<(const AbstractDecisionFeature &f) const;
 
-   bool operator<(const AbstractDecisionFeature &f) const {
-      return Compare(f) < 0;
-   }
-
-   std::function<bool(const AbstractDecisionFeature &)>GetLessThanComparator(void) const {
-      throw DecisionTreeException("AbstractDecisionFeature::GetLessThanComparator: not implemented");
-   }
+   virtual MidCompare GetLessThanMidpointComparator(void) const = 0;
 
 public:
    static void RegisterConstructorNotification(const std::function<void(AbstractDecisionFeature *)> &hook);
@@ -41,6 +37,20 @@ public:
    }
 
    T operator*(void) { return value; }
+
+   virtual MidCompare GetLessThanMidpointComparator(void) const {
+      return [](const AbstractDecisionFeature &_low, const AbstractDecisionFeature &_high, const AbstractDecisionFeature &_compareValue) {
+         // all values must be of our same type
+         auto low = dynamic_cast<const DecisionFeature *>(&_low);
+         auto high = dynamic_cast<const DecisionFeature *>(&_high);
+         auto compareValue = dynamic_cast<const DecisionFeature *>(&_compareValue);
+         if (low == nullptr || high == nullptr || compareValue == nullptr)
+            throw DecisionTreeException("DecisionFeature::GetLessThanMidpointComparator: invalid parameter");
+
+         // this will fail for features that don't support arithmetic... deal with that later
+         return (2 * compareValue->value) < (low->value + high->value);
+      };
+   }
 
 protected:
    virtual int Compare(const AbstractDecisionFeature &_f) const {

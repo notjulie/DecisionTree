@@ -10,7 +10,17 @@ AbstractDecisionFeature::AbstractDecisionFeature(void)
    constructorCallback(this);
 }
 
-void AbstractDecisionFeature::RegisterConstructorNotification(const std::function<void(AbstractDecisionFeature *)> &hook) 
+bool AbstractDecisionFeature::operator!=(const AbstractDecisionFeature &f) const
+{
+   return Compare(f) != 0;
+}
+
+bool AbstractDecisionFeature::operator<(const AbstractDecisionFeature &f) const
+{
+   return Compare(f) < 0;
+}
+
+void AbstractDecisionFeature::RegisterConstructorNotification(const std::function<void(AbstractDecisionFeature *)> &hook)
 {
    constructorCallback = hook;
 }

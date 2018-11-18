@@ -42,7 +42,14 @@ public:
    }
 
    DecisionDataSet GetSubset(unsigned startIndex, unsigned length) {
-      throw DecisionTreeException("DecisionDataSet::GetSubset: not implemented");
+      DecisionDataSet result;
+      result.featureInfo = this->featureInfo;
+      result.points.insert(
+         result.points.begin(),
+         this->points.begin() + startIndex,
+         this->points.begin() + startIndex + length
+         );
+      return result;
    }
 
    void SortByFeature(unsigned featureIndex) {
@@ -56,7 +63,7 @@ public:
    }
 
    const AbstractDecisionFeature *GetFeature(unsigned featureIndex, unsigned pointIndex) {
-      throw DecisionTreeException("DecisionDataSet::GetFeature: not implemented");
+      return featureInfo.GetFeatureValue(points[pointIndex].featureSet, featureIndex);
    }
 
 private:

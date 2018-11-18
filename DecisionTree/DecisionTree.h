@@ -20,7 +20,7 @@ public:
    }
 
    TOutcome EvaluatePoint(const TFeatureSet &pointFeatures) {
-      throw DecisionTreeException("DecisionTree::EvaluatePoint not implemented");
+      return rootNode->EvaluatePoint(pointFeatures);
    }
 
 private:
@@ -100,8 +100,8 @@ private:
             triedSomething = true;
          }
 
-         below = middle - distanceFromMiddle;
-         above = middle - distanceFromMiddle - 1;
+         below = middle - distanceFromMiddle - 1;
+         above = middle - distanceFromMiddle;
          if (below >= 0)
          {
             if (*dataSet.GetFeature(featureIndex, below) != *dataSet.GetFeature(featureIndex, above))
@@ -119,11 +119,14 @@ private:
 
       // we have found two consecutive samples whose feature values are different;
       // their indices are "below" and "above"; use them to create a decision node
+      std::unique_ptr<TreeNode> belowTree = CreateTree(dataSet.GetSubset(0, below + 1));
+      std::unique_ptr<TreeNode> aboveTree = CreateTree(dataSet.GetSubset(above, (unsigned)(dataSet.GetCount() - above)));
+
       std::unique_ptr<TreeNode> result;
       result.reset(new DecisionNode<TFeatureSet,TOutcome>(
-         CreateTree(dataSet.GetSubset(0, below + 1)),
-         CreateTree(dataSet.GetSubset(above, (unsigned)(dataSet.GetCount() - above))),
-         dataSet.GetFeature(featureIndex, above)->GetLessThanComparator()
+         belowTree,
+         aboveTree,
+         dataSet.GetFeature(featureIndex, above)->GetLessThanMidpointComparator()
          ));
       return result;
    }
