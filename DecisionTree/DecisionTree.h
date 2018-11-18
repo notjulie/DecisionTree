@@ -3,8 +3,8 @@
 #define DECISIONTREE_H
 
 #include "DecisionDataSet.h"
+#include "DecisionNode.h"
 #include "DecisionTreeException.h"
-#include "DecisionTreeNode.h"
 #include "LeafNode.h"
 
 template <typename TFeatureSet, typename TOutcome>
@@ -55,21 +55,77 @@ private:
          throw DecisionTreeException("DecisionTreeNode::CreateTree: invalid feature set");
 
       // else we branch on whichever feature gives us the smallest tree
-      result = BranchOnFeature(dataSet, 0);
-      for (unsigned i = 1; i < featureCount; ++i)
+      for (unsigned i = 0; i < featureCount; ++i)
       {
          std::unique_ptr<TreeNode> tree = BranchOnFeature(dataSet, i);
-         if (tree->GetDepth() < result->GetDepth())
+         if (result.get() == nullptr)
+         {
             result = std::move(tree);
-         else if (tree->GetDepth() == result->GetDepth() && tree->GetTotalNodeCount() < result->GetTotalNodeCount())
-            result = std::move(tree);
+         }
+         else if (tree.get() != nullptr)
+         {
+            if (tree->GetDepth() < result->GetDepth())
+               result = std::move(tree);
+            else if (tree->GetDepth() == result->GetDepth() && tree->GetTotalNodeCount() < result->GetTotalNodeCount())
+               result = std::move(tree);
+         }
       }
+
+      if (result.get() == nullptr)
+         throw DecisionTreeException("DecisionTree::CreateTree: ambiguous data set");
 
       return result;
    }
 
-   static std::unique_ptr<TreeNode> BranchOnFeature(const DataSet &dataSet, unsigned featureIndex) {
-      throw DecisionTreeException("DecisionTree::BranchOnFeature: not implemented");
+   static std::unique_ptr<TreeNode> BranchOnFeature(const DataSet &_dataSet, unsigned featureIndex) {
+      // make a copy of the data set sorted on our feature
+      DataSet dataSet = _dataSet;
+      dataSet.SortByFeature(featureIndex);
+
+      // for now, just split on the middle, as long as we can find two consecutive feature
+      // values that are different
+      int middle = (int)dataSet.GetCount() / 2;
+      int below, above;
+      int distanceFromMiddle = 0;
+      for (;;)
+      {
+         bool triedSomething = false;
+         
+         below = middle + distanceFromMiddle;
+         above = middle + distanceFromMiddle + 1;
+         if (above < dataSet.GetCount())
+         {
+            if (*dataSet.GetFeature(featureIndex, below) != *dataSet.GetFeature(featureIndex, above))
+               break;
+            triedSomething = true;
+         }
+
+         below = middle - distanceFromMiddle;
+         above = middle - distanceFromMiddle - 1;
+         if (below >= 0)
+         {
+            if (*dataSet.GetFeature(featureIndex, below) != *dataSet.GetFeature(featureIndex, above))
+               break;
+            triedSomething = true;
+         }
+
+         // if we were out of bounds for both our tests above, that means all feature values are the same,
+         // so we can't make a decision... just return nullptr
+         if (!triedSomething)
+            return std::unique_ptr<TreeNode>();
+
+         ++distanceFromMiddle;
+      }
+
+      // we have found two consecutive samples whose feature values are different;
+      // their indices are "below" and "above"; use them to create a decision node
+      std::unique_ptr<TreeNode> result;
+      result.reset(new DecisionNode<TFeatureSet,TOutcome>(
+         CreateTree(dataSet.GetSubset(0, below + 1)),
+         CreateTree(dataSet.GetSubset(above, (unsigned)(dataSet.GetCount() - above))),
+         dataSet.GetFeature(featureIndex, above)->GetLessThanComparator()
+         ));
+      return result;
    }
 
 private:

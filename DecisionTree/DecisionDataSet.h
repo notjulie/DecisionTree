@@ -29,6 +29,18 @@ public:
       return featureInfo.GetFeatureCount();
    }
 
+   DecisionDataSet GetSubset(unsigned startIndex, unsigned length) {
+      throw DecisionTreeException("DecisionDataSet::GetSubset: not implemented");
+   }
+
+   void SortByFeature(unsigned featureIndex) {
+      throw DecisionTreeException("DecisionDataSet::SortByFeature: not implemented");
+   }
+
+   const AbstractDecisionFeature *GetFeature(unsigned featureIndex, unsigned pointIndex) {
+      throw DecisionTreeException("DecisionDataSet::GetFeature: not implemented");
+   }
+
 private:
    struct Pair {
       TFeatureSet featureSet;

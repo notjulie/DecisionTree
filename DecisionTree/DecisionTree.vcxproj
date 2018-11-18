@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClInclude Include="DecisionDataSet.h" />
     <ClInclude Include="DecisionFeature.h" />
+    <ClInclude Include="DecisionNode.h" />
     <ClInclude Include="DecisionTree.h" />
     <ClInclude Include="DecisionTreeException.h" />
     <ClInclude Include="DecisionTreeNode.h" />
