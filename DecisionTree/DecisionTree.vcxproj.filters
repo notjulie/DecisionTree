@@ -38,9 +38,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DecisionTree.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DecisionFeature.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
