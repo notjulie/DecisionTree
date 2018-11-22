@@ -70,12 +70,17 @@ private:
          // create a new tree node
          std::unique_ptr<TreeNode> tree = BranchOnFeature(dataSet, i, maxDepth, maxLeaves);
 
-         // if we succeeded then update our max... we don't want to keep looking for
-         // trees unless we can find something more compact than this one
+         // if we succeeded then accept the result
          if (tree.get() != nullptr)
          {
             result = std::move(tree);
-            maxDepth = result->GetDepth() - 1;
+
+            // Update our max... we don't want to keep looking for trees unless we can find
+            // something more compact than this one.  Start by saying that everything must be no
+            // deeper than what we've already found
+            maxDepth = result->GetDepth();
+
+            // and it must have fewer leaves
             maxLeaves = result->GetTotalLeafCount() - 1;
          }
       }
