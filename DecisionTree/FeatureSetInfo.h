@@ -1,9 +1,22 @@
+// =========================================================================
+//    DecisionTreeException.cpp
+//    Author: Randy Rasmussen
+//    Copyright: none, use at your own risk and to your heart's content
+//
+//		Contains the implementation of FeatureSetInfo template class
+//    
+// =========================================================================
 
 #ifndef FEATURESETINFO_H
 #define FEATURESETINFO_H
 
 #include "DecisionFeature.h"
 
+/// <summary>
+/// FeatureSetInfo template class... this sniffs a structure containing members that
+/// inherit AbstractDecisionFeature and accumulates information about their location
+/// with the structure so that they may be accessed dynamically.
+/// </summary>
 template <typename T> class FeatureSetInfo {
 public:
    size_t GetFeatureCount(void) const { return featureOffsets.size(); }
@@ -66,6 +79,10 @@ private:
    static thread_local FeatureSetInfo *instance;
 };
 
+
+/// <summary>
+/// Our global instance for each templated type
+/// </summary>
 template <class T>  thread_local FeatureSetInfo<T> *FeatureSetInfo<T>::instance = nullptr;
 
 #endif
