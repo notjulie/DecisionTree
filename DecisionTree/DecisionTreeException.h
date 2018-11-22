@@ -12,7 +12,7 @@
 #include <stdexcept>
 
 /// <summary>
-/// class for decision tree exceptions
+/// Base class for decision tree exceptions
 /// <summary>
 class DecisionTreeException : public std::runtime_error {
 public:
