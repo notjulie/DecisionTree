@@ -16,9 +16,15 @@ public:
 
 public:
    DecisionTree(const DataSet &dataSet) {
+      // create the tree
       rootNode = CreateTree(dataSet, 0x7FFFFFFF, 0x7FFFFFFF);
       if (rootNode.get() == nullptr)
          throw DecisionTreeException("DecisionTree::DecisionTree: CreateTree returned nullptr");
+
+      // verify that all the points in the data set are evaluated correctly
+      for (unsigned i=0; i<dataSet.GetCount(); ++i)
+         if (EvaluatePoint(dataSet.GetFeatureSet(i)) != dataSet.GetOutcome(i))
+            throw DecisionTreeException("DecisionTree::DecisionTree: verification failed");
    }
 
    TOutcome EvaluatePoint(const TFeatureSet &pointFeatures) {
