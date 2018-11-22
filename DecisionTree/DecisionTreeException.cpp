@@ -9,6 +9,9 @@
 
 #include "DecisionTreeException.h"
 
+/// <summary>
+/// Initializes a new instance of class DecisionTreeException
+/// <summary>
 DecisionTreeException::DecisionTreeException(const std::string &message)
    : std::runtime_error(message)
 {
