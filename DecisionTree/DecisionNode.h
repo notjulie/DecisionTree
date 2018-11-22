@@ -28,8 +28,8 @@ public:
       this->featureIndex = featureIndex;
    }
 
-   virtual unsigned GetDepth(void) const { return 1 + belowNode->GetDepth() + aboveNode->GetDepth(); }
-   virtual unsigned GetTotalNodeCount(void) const { return 1 + belowNode->GetTotalNodeCount() + aboveNode->GetTotalNodeCount(); }
+   virtual unsigned GetDepth(void) const { return 1 + std::max(belowNode->GetDepth(), aboveNode->GetDepth()); }
+   virtual unsigned GetTotalLeafCount(void) const { return belowNode->GetTotalLeafCount() + aboveNode->GetTotalLeafCount(); }
    virtual TOutcome EvaluatePoint(const TFeatureSet &pointFeatures) {
       auto featureInfo = FeatureInfo::GetInstance();
       auto featureValue = featureInfo.GetFeatureValue(pointFeatures, featureIndex);

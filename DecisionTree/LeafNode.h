@@ -11,7 +11,7 @@ public:
    }
 
    virtual unsigned GetDepth(void) const { return 1; }
-   virtual unsigned GetTotalNodeCount(void) const { return 1; }
+   virtual unsigned GetTotalLeafCount(void) const { return 1; }
    virtual TOutcome EvaluatePoint(const TFeatureSet &pointFeatures) { return outcome; }
 
 private:

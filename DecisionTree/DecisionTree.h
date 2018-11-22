@@ -16,7 +16,9 @@ public:
 
 public:
    DecisionTree(const DataSet &dataSet) {
-      rootNode = CreateTree(dataSet);
+      rootNode = CreateTree(dataSet, 0x7FFFFFFF, 0x7FFFFFFF);
+      if (rootNode.get() == nullptr)
+         throw DecisionTreeException("DecisionTree::DecisionTree: CreateTree returned nullptr");
    }
 
    TOutcome EvaluatePoint(const TFeatureSet &pointFeatures) {
@@ -24,8 +26,12 @@ public:
    }
 
 private:
-   static std::unique_ptr<TreeNode> CreateTree(const DataSet &dataSet) {
+   static std::unique_ptr<TreeNode> CreateTree(const DataSet &dataSet, int maxDepth, int maxLeaves) {
       std::unique_ptr<TreeNode> result;
+
+      // make sure that we aren't exceeding the max size
+      if (maxDepth < 1 || maxLeaves < 1)
+         return result;
 
       // if the dataset is empty we have a problem... we can't make a decision with sample data
       auto pointCount = dataSet.GetCount();
@@ -49,6 +55,10 @@ private:
          return result;
       }
 
+      // we have to branch so that means at least two leaves
+      if (maxLeaves < 2)
+         return result;
+
       // sanity check our feature set
       auto featureCount = dataSet.GetFeatureCount();
       if (featureCount <= 0)
@@ -57,27 +67,25 @@ private:
       // else we branch on whichever feature gives us the smallest tree
       for (unsigned i = 0; i < featureCount; ++i)
       {
-         std::unique_ptr<TreeNode> tree = BranchOnFeature(dataSet, i);
-         if (result.get() == nullptr)
+         // create a new tree node
+         std::unique_ptr<TreeNode> tree = BranchOnFeature(dataSet, i, maxDepth, maxLeaves);
+
+         // if we succeeded then update our max... we don't want to keep looking for
+         // trees unless we can find something more compact than this one
+         if (tree.get() != nullptr)
          {
             result = std::move(tree);
-         }
-         else if (tree.get() != nullptr)
-         {
-            if (tree->GetDepth() < result->GetDepth())
-               result = std::move(tree);
-            else if (tree->GetDepth() == result->GetDepth() && tree->GetTotalNodeCount() < result->GetTotalNodeCount())
-               result = std::move(tree);
+            maxDepth = result->GetDepth() - 1;
+            maxLeaves = result->GetTotalLeafCount() - 1;
          }
       }
-
-      if (result.get() == nullptr)
-         throw DecisionTreeException("DecisionTree::CreateTree: ambiguous data set");
 
       return result;
    }
 
-   static std::unique_ptr<TreeNode> BranchOnFeature(const DataSet &_dataSet, unsigned featureIndex) {
+   static std::unique_ptr<TreeNode> BranchOnFeature(const DataSet &_dataSet, unsigned featureIndex, int maxDepth, int maxLeaves) {
+      std::unique_ptr<TreeNode> result;
+
       // make a copy of the data set sorted on our feature
       DataSet dataSet = _dataSet;
       dataSet.SortByFeature(featureIndex);
@@ -119,10 +127,22 @@ private:
 
       // we have found two consecutive samples whose feature values are different;
       // their indices are "below" and "above"; use them to create a decision node
-      std::unique_ptr<TreeNode> belowTree = CreateTree(dataSet.GetSubset(0, below + 1));
-      std::unique_ptr<TreeNode> aboveTree = CreateTree(dataSet.GetSubset(above, (unsigned)(dataSet.GetCount() - above)));
+      std::unique_ptr<TreeNode> belowTree =
+         CreateTree(
+            dataSet.GetSubset(0, below + 1),
+            maxDepth - 1,
+            maxLeaves);
+      if (belowTree.get() == nullptr)
+         return result;
 
-      std::unique_ptr<TreeNode> result;
+      std::unique_ptr<TreeNode> aboveTree =
+         CreateTree(
+            dataSet.GetSubset(above, (unsigned)(dataSet.GetCount() - above)),
+            maxDepth - 1,
+            maxLeaves - belowTree->GetTotalLeafCount());
+      if (aboveTree.get() == nullptr)
+         return result;
+
       result.reset(new DecisionNode<TFeatureSet,TOutcome>(
          belowTree,
          dataSet.GetFeatureSet(below),
