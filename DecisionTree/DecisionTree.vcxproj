@@ -150,12 +150,14 @@
     <ClInclude Include="CompactedBinaryDecisionTree.h" />
     <ClInclude Include="DecisionDataSet.h" />
     <ClInclude Include="DecisionFeature.h" />
+    <ClInclude Include="DecisionForest.h" />
     <ClInclude Include="DecisionNode.h" />
     <ClInclude Include="DecisionTree.h" />
     <ClInclude Include="DecisionTreeException.h" />
     <ClInclude Include="DecisionTreeNode.h" />
     <ClInclude Include="FeatureSetInfo.h" />
     <ClInclude Include="LeafNode.h" />
+    <ClInclude Include="OutcomeDistribution.h" />
     <ClInclude Include="RandomBranchingDecisionTree.h" />
   </ItemGroup>
   <ItemGroup>
