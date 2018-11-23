@@ -39,6 +39,9 @@
     <ClInclude Include="DecisionNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CompactedBinaryDecisionTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DecisionFeature.cpp">

@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CompactedBinaryDecisionTree.h" />
     <ClInclude Include="DecisionDataSet.h" />
     <ClInclude Include="DecisionFeature.h" />
     <ClInclude Include="DecisionNode.h" />
