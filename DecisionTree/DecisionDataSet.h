@@ -1,3 +1,12 @@
+// =========================================================================
+//    DecisionDataSet.h
+//    Author: Randy Rasmussen
+//    Copyright: none, use at your own risk and to your heart's content
+//
+//		Contains the implementation of DecisionDataSet template class
+//    
+// =========================================================================
+
 
 #ifndef DECISIONDATASET_H
 #define DECISIONDATASET_H
