@@ -51,7 +51,7 @@ public:
       return FeatureInfo::GetInstance().GetFeatureCount();
    }
 
-   DecisionDataSet GetSubset(unsigned startIndex, unsigned length) {
+   DecisionDataSet GetSubset(unsigned startIndex, size_t length) {
       DecisionDataSet result;
       result.points.insert(
          result.points.begin(),

@@ -156,6 +156,7 @@
     <ClInclude Include="DecisionTreeNode.h" />
     <ClInclude Include="FeatureSetInfo.h" />
     <ClInclude Include="LeafNode.h" />
+    <ClInclude Include="RandomBranchingDecisionTree.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DecisionFeature.cpp" />

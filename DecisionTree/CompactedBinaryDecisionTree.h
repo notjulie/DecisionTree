@@ -2,7 +2,11 @@
 #ifndef COMPACTEDBINARYDECISIONTREE_H
 #define COMPACTEDBINARYDECISIONTREE_H
 
+#include "DecisionDataSet.h"
+#include "DecisionNode.h"
 #include "DecisionTree.h"
+#include "DecisionTreeException.h"
+#include "LeafNode.h"
 
 template <typename TFeatureSet, typename TOutcome>
    class CompactedBinaryDecisionTree : public DecisionTree<TFeatureSet, TOutcome>
@@ -12,20 +16,9 @@ public:
    using TreeNode = DecisionTreeNode<TFeatureSet, TOutcome>;
 
 public:
-   CompactedBinaryDecisionTree(const DataSet &dataSet) {
-      // create the tree
-      rootNode = CreateTree(dataSet, 0x7FFFFFFF, 0x7FFFFFFF);
-      if (rootNode.get() == nullptr)
-         throw DecisionTreeException("DecisionTree::DecisionTree: CreateTree returned nullptr");
-
-      // verify that all the points in the data set are evaluated correctly
-      for (unsigned i = 0; i<dataSet.GetCount(); ++i)
-         if (EvaluatePoint(dataSet.GetFeatureSet(i)) != dataSet.GetOutcome(i))
-            throw DecisionTreeException("DecisionTree::DecisionTree: verification failed");
-   }
-
-   TOutcome EvaluatePoint(const TFeatureSet &pointFeatures) {
-      return rootNode->EvaluatePoint(pointFeatures);
+   CompactedBinaryDecisionTree(const DataSet &dataSet) 
+      : DecisionTree<TFeatureSet, TOutcome>(CreateTree(dataSet, 0x7FFFFFFF, 0x7FFFFFFF))
+   {
    }
 
 private:
@@ -160,9 +153,6 @@ private:
          ));
       return result;
    }
-
-private:
-   std::unique_ptr<DecisionTreeNode<TFeatureSet, TOutcome>> rootNode;
 };
 
 
