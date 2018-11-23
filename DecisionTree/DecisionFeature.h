@@ -1,3 +1,10 @@
+// =========================================================================
+//    DecisionFeature.h
+//    Author: Randy Rasmussen
+//    Copyright: none, use at your own risk and to your heart's content
+//
+//		Contains the definition of class DecisionFeature.
+// =========================================================================
 
 #ifndef DECISIONFEATURE_H
 #define DECISIONFEATURE_H
@@ -14,13 +21,13 @@ public:
 
    virtual bool IsLessThanMidpoint(const AbstractDecisionFeature &a, const AbstractDecisionFeature &b) const = 0;
 
-public:
-   static void RegisterConstructorNotification(const std::function<void(AbstractDecisionFeature *)> &hook);
-
 protected:
    virtual int Compare(const AbstractDecisionFeature &f) const = 0;
 
 private:
+   // delare our static member that allows FeatureSetInfo types to hook our constructor so
+   // that it can sniff a structure for instances of this class
+   friend class AbstractFeatureSetInfo;
    static thread_local std::function<void(AbstractDecisionFeature *)> constructorCallback;
 };
 

@@ -1,5 +1,5 @@
 // =========================================================================
-//    DecisionTreeException.cpp
+//    FeatureSetInfo.h
 //    Author: Randy Rasmussen
 //    Copyright: none, use at your own risk and to your heart's content
 //
@@ -13,11 +13,23 @@
 #include "DecisionFeature.h"
 
 /// <summary>
+/// Abstract base class for FeatureSetInfo
+/// </summary>
+class AbstractFeatureSetInfo {
+protected:
+   void SetFeatureHook(const std::function<void(AbstractDecisionFeature *)> &hook) {
+      // this is a private member of AbstractDecisionFeature, but we are a friend class for
+      // the sole purpose of allowing us to do this
+      AbstractDecisionFeature::constructorCallback = hook;
+   }
+};
+
+/// <summary>
 /// FeatureSetInfo template class... this sniffs a structure containing members that
 /// inherit AbstractDecisionFeature and accumulates information about their location
 /// with the structure so that they may be accessed dynamically.
 /// </summary>
-template <typename T> class FeatureSetInfo {
+template <typename T> class FeatureSetInfo : private AbstractFeatureSetInfo {
 public:
    size_t GetFeatureCount(void) const { return featureOffsets.size(); }
 
@@ -35,10 +47,10 @@ private:
       std::vector<AbstractDecisionFeature *> features;
 
       // register our function to be called whenever a new feature is constructed
-      AbstractDecisionFeature::RegisterConstructorNotification(
+      SetFeatureHook(
          [&](AbstractDecisionFeature *feature) {
-         features.push_back(feature);
-      }
+            features.push_back(feature);
+         }
       );
 
       try {
@@ -56,11 +68,11 @@ private:
          }
 
          // clear the callback
-         AbstractDecisionFeature::RegisterConstructorNotification([](AbstractDecisionFeature *feature) {});
+         SetFeatureHook([](AbstractDecisionFeature *feature) {});
       }
       catch (...) {
          // clear the callback and rethrow
-         AbstractDecisionFeature::RegisterConstructorNotification([](AbstractDecisionFeature *feature) {});
+         SetFeatureHook([](AbstractDecisionFeature *feature) {});
          throw;
       }
    }
